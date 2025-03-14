@@ -6,9 +6,9 @@ import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Profile from "./pages/Profile.jsx";
 import Setting from "./pages/Setting.jsx";
-import { useThemeStore } from "./stores/useThemeStore.js";
+import { useThemeStore } from "./store/useThemeStore.js";
 import { Toaster } from "react-hot-toast";
-import { useAuthStore } from "./stores/useAuthStore.js";
+import { useAuthStore } from "./store/useAuthStore.js";
 import { useEffect } from "react";
 
 function App() {
@@ -18,6 +18,7 @@ function App() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
   if (isCheckingAuth && !authUser) {
     return (
       <div className="flex items-center justify-center h-screen ">
