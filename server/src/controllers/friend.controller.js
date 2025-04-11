@@ -42,6 +42,7 @@ export const addFriend = async (req, res) => {
     }
     res.status(200).json({ message: "Friend request sent" });
   } catch (error) {
+    console.log(error);
     res
       .status(500)
       .json({ message: "Internal Server Error while adding a new friend" });

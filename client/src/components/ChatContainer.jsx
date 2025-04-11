@@ -5,7 +5,6 @@ import ChatHeader from "./ChatHeader";
 import MessageInput from "./MessageInput";
 import MessageSkeleton from "./skeletons/MessageSkeleton";
 import { formatMessageTime } from "../lib/utils.js";
-import { acceptFriendRequest } from "../../../server/src/controllers/friend.controller.js";
 
 const ChatContainer = () => {
   const {
@@ -22,6 +21,7 @@ const ChatContainer = () => {
     setIsFriend,
     setFriendRequestSent,
     setFriendRequestReceived,
+    acceptFriendRequest,
   } = useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
@@ -42,37 +42,23 @@ const ChatContainer = () => {
     unsubscribeFromMessage,
   ]);
 
-  const handleAcceptRequest = () => {
-    acceptFriendRequest(selectedUser._id);
-    setIsFriend(true), setFriendRequestReceived(false);
-    getMessage(selectedUser);
-  };
-
   //Fix it
   useEffect(() => {
     if (authUser && selectedUser) {
-      setIsFriend(
-        authUser.friends && authUser.friends.includes(selectedUser._id)
-      );
-      setFriendRequestReceived(
-        authUser.friendRequests &&
-          authUser.friendRequests.includes(selectedUser._id)
-      );
-      setFriendRequestReceived(
-        selectedUser.friendRequests &&
-          selectedUser.friendRequests.includes(authUser._id)
-      );
+      setIsFriend(authUser?.friends?.includes(selectedUser._id));
       setFriendRequestSent(
-        selectedUser.friendRequests &&
-          selectedUser.friendRequests.includes(authUser._id)
+        selectedUser?.friendRequests?.includes(authUser._id)
+      );
+      setFriendRequestReceived(
+        authUser?.friendRequests?.includes(selectedUser._id)
       );
     }
   }, [
-    authUser,
-    selectedUser,
     setIsFriend,
     setFriendRequestReceived,
     setFriendRequestSent,
+    authUser,
+    selectedUser,
   ]);
 
   useEffect(() => {
@@ -81,8 +67,20 @@ const ChatContainer = () => {
     }
   }, [messages]);
 
+  // const handleAddFriend = () => {
+  //   addFriend(selectedUser);
+  // };
+
   const handleAddFriend = () => {
-    addFriend(selectedUser);
+    addFriend(selectedUser._id);
+    setFriendRequestSent(true);
+  };
+
+  const handleAcceptFriendRequest = () => {
+    acceptFriendRequest(selectedUser._id);
+    setIsFriend(true);
+    setFriendRequestReceived(false);
+    getMessage(selectedUser._id);
   };
 
   if (isMessageLoading) {
@@ -147,14 +145,17 @@ const ChatContainer = () => {
       )}
 
       {!isFriend && friendRequestSent && !friendRequestReceived && (
-        <div className="p-4 text-center text-red-500">
+        <div className="p-4 text-center text-yellow-500">
           Friend request sent. Waiting for acceptance.
         </div>
       )}
       {!isFriend && !friendRequestSent && friendRequestReceived && (
-        <div className="p-4 text-center text-red-500">
+        <div className="p-4 text-center text-green-500">
           This user has sent you a friend request
-          <button className="btn btn-sm   mx-2" onClick={handleAcceptRequest}>
+          <button
+            className="btn btn-sm   mx-2"
+            onClick={handleAcceptFriendRequest}
+          >
             Accept friend request
           </button>
         </div>

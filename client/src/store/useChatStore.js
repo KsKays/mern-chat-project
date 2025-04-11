@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import api from "../services/api.js";
-import { useAuthStore } from "./useAuthStore.js";
 import toast from "react-hot-toast";
+import { useAuthStore } from "./useAuthStore.js";
 
 export const useChatStore = create((set, get) => ({
   users: [],
@@ -48,7 +48,9 @@ export const useChatStore = create((set, get) => ({
   //send messages
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
+    set({ isSendingMessage: true });
     try {
+      console.log("User selected",selectedUser);
       const res = await api.post(
         "/message/send/" + selectedUser._id,
         messageData
@@ -86,11 +88,12 @@ export const useChatStore = create((set, get) => ({
   },
 
   ////เลือกส่งข้อความใหม่
-  setSelectedUser: (setSelectedUser) => {
-    set({ selectedUser: setSelectedUser });
-  },
+  // setSelectedUser: (setSelectedUser) => {
+  //   set({ selectedUser: setSelectedUser });
+  // },
 
   addFriend: async (friendId) => {
+     console.log("Sending friend request to:", friendId); // ตรวจสอบค่าก่อนส่ง
     try {
       const res = await api.post("/friend/add", { friendId });
       toast.success(res.data.message);
@@ -101,7 +104,7 @@ export const useChatStore = create((set, get) => ({
       }
       set({ friendRequestSent: true });
     } catch (error) {
-      console.error("Error in addFriend:", error);
+     
       toast.error(
         error.response.data.message ||
           "Something went wrong while adding friend"

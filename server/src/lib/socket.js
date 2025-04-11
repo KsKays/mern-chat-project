@@ -37,8 +37,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("friendRequestAccepted", (friendId) => {
-    const getReceiverSocketId = getReceiverSocketId(friendId);
-    // not
+    const receiverSocketId = getReceiverSocketId(friendId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("friendRequestAccepted", userId);
+    }
   });
 
   socket.on("disconnect", () => {

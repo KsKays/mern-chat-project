@@ -61,7 +61,7 @@ export const sendMessage = async (req, res) => {
 };
 
 //สร้าง function สำหรับการดึงข้อความ
-export const getMessages = async (req, res) => {
+export const getMessage = async (req, res) => {
   try {
     const { id: userToChatId } = req.params;
     const myId = req.user._id;

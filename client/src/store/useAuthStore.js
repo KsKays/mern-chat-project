@@ -43,6 +43,8 @@ export const useAuthStore = create((set, get) => ({
 
   //Sign In (data) === {email, password}
   signIn: async (data) => {
+    console.log(`Data : `, data);
+    
     set({ isSigningIn: true });
     try {
       const res = await api.post("/auth/signin", data);
@@ -98,7 +100,7 @@ export const useAuthStore = create((set, get) => ({
     });
 
     //
-    socket.on("friendRequestReceived", (friendId) => {
+    newSocket.on("friendRequestReceived", (friendId) => {
       console.log("", friendRequestReceived, friendId);
 
       const selectedUser = useChatStore.getState().selectedUser;
@@ -108,14 +110,14 @@ export const useAuthStore = create((set, get) => ({
       }
     });
 
-    socket.on("friendRequestSent", (friendId) => {
+    newSocket.on("friendRequestSent", (friendId) => {
       const selectedUser = useChatStore.getState().selectedUser;
       if (friendId === selectedUser._id) {
         useChatStore.getState().setFriendRequestReceived(false);
       }
     });
 
-    socket.on("friendRequestAccepted", (friendId) => {
+    newSocket.on("friendRequestAccepted", (friendId) => {
       const selectedUser = useChatStore.getState().selectedUser;
       if (friendId === selectedUser._id) {
         useChatStore.getState().setFriendRequestReceived(false);
